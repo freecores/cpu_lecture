@@ -100,12 +100,12 @@ signal L_PM_ADR_1_0 : std_logic_vector( 1 downto 0);
 begin
 
     pe_0 : RAMB4_S4_S4 ---------------------------------------------------------
-    generic map(INIT_00 => pe_0_00, INIT_01 => pe_0_01, INIT_02 => pe_0_02, 
-                INIT_03 => pe_0_03, INIT_04 => pe_0_04, INIT_05 => pe_0_05,
-                INIT_06 => pe_0_06, INIT_07 => pe_0_07, INIT_08 => pe_0_08,
-                INIT_09 => pe_0_09, INIT_0A => pe_0_0A, INIT_0B => pe_0_0B, 
-                INIT_0C => pe_0_0C, INIT_0D => pe_0_0D, INIT_0E => pe_0_0E,
-                INIT_0F => pe_0_0F)
+    generic map(INIT_00 => p0_00, INIT_01 => p0_01, INIT_02 => p0_02, 
+                INIT_03 => p0_03, INIT_04 => p0_04, INIT_05 => p0_05,
+                INIT_06 => p0_06, INIT_07 => p0_07, INIT_08 => p0_08,
+                INIT_09 => p0_09, INIT_0A => p0_0A, INIT_0B => p0_0B, 
+                INIT_0C => p0_0C, INIT_0D => p0_0D, INIT_0E => p0_0E,
+                INIT_0F => p0_0F)
     port map(ADDRA => L_PC_E,                   ADDRB => I_PM_ADR(11 downto 2),
              CLKA  => I_CLK,                    CLKB  => I_CLK,
              DIA   => "0000",                   DIB   => "0000",
@@ -115,12 +115,12 @@ begin
              DOA   => M_OPC_E(3 downto 0),      DOB   => M_PMD_E(3 downto 0));
  
     pe_1 : RAMB4_S4_S4 ---------------------------------------------------------
-    generic map(INIT_00 => pe_1_00, INIT_01 => pe_1_01, INIT_02 => pe_1_02,
-                INIT_03 => pe_1_03, INIT_04 => pe_1_04, INIT_05 => pe_1_05,
-                INIT_06 => pe_1_06, INIT_07 => pe_1_07, INIT_08 => pe_1_08,
-                INIT_09 => pe_1_09, INIT_0A => pe_1_0A, INIT_0B => pe_1_0B,
-                INIT_0C => pe_1_0C, INIT_0D => pe_1_0D, INIT_0E => pe_1_0E,
-                INIT_0F => pe_1_0F)
+    generic map(INIT_00 => p1_00, INIT_01 => p1_01, INIT_02 => p1_02,
+                INIT_03 => p1_03, INIT_04 => p1_04, INIT_05 => p1_05,
+                INIT_06 => p1_06, INIT_07 => p1_07, INIT_08 => p1_08,
+                INIT_09 => p1_09, INIT_0A => p1_0A, INIT_0B => p1_0B,
+                INIT_0C => p1_0C, INIT_0D => p1_0D, INIT_0E => p1_0E,
+                INIT_0F => p1_0F)
     port map(ADDRA => L_PC_E,                   ADDRB => I_PM_ADR(11 downto 2),
              CLKA  => I_CLK,                    CLKB  => I_CLK,
              DIA   => "0000",                   DIB   => "0000",
@@ -130,12 +130,12 @@ begin
              DOA   => M_OPC_E(7 downto 4),      DOB   => M_PMD_E(7 downto 4));
  
     pe_2 : RAMB4_S4_S4 ---------------------------------------------------------
-    generic map(INIT_00 => pe_2_00, INIT_01 => pe_2_01, INIT_02 => pe_2_02,
-                INIT_03 => pe_2_03, INIT_04 => pe_2_04, INIT_05 => pe_2_05,
-                INIT_06 => pe_2_06, INIT_07 => pe_2_07, INIT_08 => pe_2_08,
-                INIT_09 => pe_2_09, INIT_0A => pe_2_0A, INIT_0B => pe_2_0B,
-                INIT_0C => pe_2_0C, INIT_0D => pe_2_0D, INIT_0E => pe_2_0E,
-                INIT_0F => pe_2_0F)
+    generic map(INIT_00 => p2_00, INIT_01 => p2_01, INIT_02 => p2_02,
+                INIT_03 => p2_03, INIT_04 => p2_04, INIT_05 => p2_05,
+                INIT_06 => p2_06, INIT_07 => p2_07, INIT_08 => p2_08,
+                INIT_09 => p2_09, INIT_0A => p2_0A, INIT_0B => p2_0B,
+                INIT_0C => p2_0C, INIT_0D => p2_0D, INIT_0E => p2_0E,
+                INIT_0F => p2_0F)
     port map(ADDRA => L_PC_E,                   ADDRB => I_PM_ADR(11 downto 2),
              CLKA  => I_CLK,                    CLKB  => I_CLK,
              DIA   => "0000",                   DIB   => "0000",
@@ -145,12 +145,12 @@ begin
              DOA   => M_OPC_E(11 downto 8),     DOB   => M_PMD_E(11 downto 8));
  
     pe_3 : RAMB4_S4_S4 ---------------------------------------------------------
-    generic map(INIT_00 => pe_3_00, INIT_01 => pe_3_01, INIT_02 => pe_3_02,
-                INIT_03 => pe_3_03, INIT_04 => pe_3_04, INIT_05 => pe_3_05,
-                INIT_06 => pe_3_06, INIT_07 => pe_3_07, INIT_08 => pe_3_08,
-                INIT_09 => pe_3_09, INIT_0A => pe_3_0A, INIT_0B => pe_3_0B,
-                INIT_0C => pe_3_0C, INIT_0D => pe_3_0D, INIT_0E => pe_3_0E,
-                INIT_0F => pe_3_0F)
+    generic map(INIT_00 => p3_00, INIT_01 => p3_01, INIT_02 => p3_02,
+                INIT_03 => p3_03, INIT_04 => p3_04, INIT_05 => p3_05,
+                INIT_06 => p3_06, INIT_07 => p3_07, INIT_08 => p3_08,
+                INIT_09 => p3_09, INIT_0A => p3_0A, INIT_0B => p3_0B,
+                INIT_0C => p3_0C, INIT_0D => p3_0D, INIT_0E => p3_0E,
+                INIT_0F => p3_0F)
     port map(ADDRA => L_PC_E,                   ADDRB => I_PM_ADR(11 downto 2),
              CLKA  => I_CLK,                    CLKB  => I_CLK,
              DIA   => "0000",                   DIB   => "0000",
@@ -160,12 +160,12 @@ begin
              DOA   => M_OPC_E(15 downto 12),    DOB   => M_PMD_E(15 downto 12));
  
     po_0 : RAMB4_S4_S4 ---------------------------------------------------------
-    generic map(INIT_00 => po_0_00, INIT_01 => po_0_01, INIT_02 => po_0_02,
-                INIT_03 => po_0_03, INIT_04 => po_0_04, INIT_05 => po_0_05,
-                INIT_06 => po_0_06, INIT_07 => po_0_07, INIT_08 => po_0_08,
-                INIT_09 => po_0_09, INIT_0A => po_0_0A, INIT_0B => po_0_0B, 
-                INIT_0C => po_0_0C, INIT_0D => po_0_0D, INIT_0E => po_0_0E,
-                INIT_0F => po_0_0F)
+    generic map(INIT_00 => p4_00, INIT_01 => p4_01, INIT_02 => p4_02,
+                INIT_03 => p4_03, INIT_04 => p4_04, INIT_05 => p4_05,
+                INIT_06 => p4_06, INIT_07 => p4_07, INIT_08 => p4_08,
+                INIT_09 => p4_09, INIT_0A => p4_0A, INIT_0B => p4_0B, 
+                INIT_0C => p4_0C, INIT_0D => p4_0D, INIT_0E => p4_0E,
+                INIT_0F => p4_0F)
     port map(ADDRA => L_PC_O,                   ADDRB => I_PM_ADR(11 downto 2),
              CLKA  => I_CLK,                    CLKB  => I_CLK,
              DIA   => "0000",                   DIB   => "0000",
@@ -175,12 +175,12 @@ begin
              DOA   => M_OPC_O(3 downto 0),      DOB   => M_PMD_O(3 downto 0));
  
     po_1 : RAMB4_S4_S4 ---------------------------------------------------------
-    generic map(INIT_00 => po_1_00, INIT_01 => po_1_01, INIT_02 => po_1_02,
-                INIT_03 => po_1_03, INIT_04 => po_1_04, INIT_05 => po_1_05,
-                INIT_06 => po_1_06, INIT_07 => po_1_07, INIT_08 => po_1_08,
-                INIT_09 => po_1_09, INIT_0A => po_1_0A, INIT_0B => po_1_0B, 
-                INIT_0C => po_1_0C, INIT_0D => po_1_0D, INIT_0E => po_1_0E,
-                INIT_0F => po_1_0F)
+    generic map(INIT_00 => p5_00, INIT_01 => p5_01, INIT_02 => p5_02,
+                INIT_03 => p5_03, INIT_04 => p5_04, INIT_05 => p5_05,
+                INIT_06 => p5_06, INIT_07 => p5_07, INIT_08 => p5_08,
+                INIT_09 => p5_09, INIT_0A => p5_0A, INIT_0B => p5_0B, 
+                INIT_0C => p5_0C, INIT_0D => p5_0D, INIT_0E => p5_0E,
+                INIT_0F => p5_0F)
     port map(ADDRA => L_PC_O,                   ADDRB => I_PM_ADR(11 downto 2),
              CLKA  => I_CLK,                    CLKB  => I_CLK,
              DIA   => "0000",                   DIB   => "0000",
@@ -190,12 +190,12 @@ begin
              DOA   => M_OPC_O(7 downto 4),      DOB   => M_PMD_O(7 downto 4));
  
     po_2 : RAMB4_S4_S4 ---------------------------------------------------------
-    generic map(INIT_00 => po_2_00, INIT_01 => po_2_01, INIT_02 => po_2_02,
-                INIT_03 => po_2_03, INIT_04 => po_2_04, INIT_05 => po_2_05,
-                INIT_06 => po_2_06, INIT_07 => po_2_07, INIT_08 => po_2_08,
-                INIT_09 => po_2_09, INIT_0A => po_2_0A, INIT_0B => po_2_0B,
-                INIT_0C => po_2_0C, INIT_0D => po_2_0D, INIT_0E => po_2_0E,
-                INIT_0F => po_2_0F)
+    generic map(INIT_00 => p6_00, INIT_01 => p6_01, INIT_02 => p6_02,
+                INIT_03 => p6_03, INIT_04 => p6_04, INIT_05 => p6_05,
+                INIT_06 => p6_06, INIT_07 => p6_07, INIT_08 => p6_08,
+                INIT_09 => p6_09, INIT_0A => p6_0A, INIT_0B => p6_0B,
+                INIT_0C => p6_0C, INIT_0D => p6_0D, INIT_0E => p6_0E,
+                INIT_0F => p6_0F)
     port map(ADDRA => L_PC_O,                   ADDRB => I_PM_ADR(11 downto 2),
              CLKA  => I_CLK,                    CLKB  => I_CLK,
              DIA   => "0000",                   DIB   => "0000",
@@ -205,12 +205,12 @@ begin
              DOA   => M_OPC_O(11 downto 8),     DOB   => M_PMD_O(11 downto 8));
  
     po_3 : RAMB4_S4_S4 ---------------------------------------------------------
-    generic map(INIT_00 => po_3_00, INIT_01 => po_3_01, INIT_02 => po_3_02,
-                INIT_03 => po_3_03, INIT_04 => po_3_04, INIT_05 => po_3_05,
-                INIT_06 => po_3_06, INIT_07 => po_3_07, INIT_08 => po_3_08,
-                INIT_09 => po_3_09, INIT_0A => po_3_0A, INIT_0B => po_3_0B, 
-                INIT_0C => po_3_0C, INIT_0D => po_3_0D, INIT_0E => po_3_0E,
-                INIT_0F => po_3_0F)
+    generic map(INIT_00 => p7_00, INIT_01 => p7_01, INIT_02 => p7_02,
+                INIT_03 => p7_03, INIT_04 => p7_04, INIT_05 => p7_05,
+                INIT_06 => p7_06, INIT_07 => p7_07, INIT_08 => p7_08,
+                INIT_09 => p7_09, INIT_0A => p7_0A, INIT_0B => p7_0B, 
+                INIT_0C => p7_0C, INIT_0D => p7_0D, INIT_0E => p7_0E,
+                INIT_0F => p7_0F)
     port map(ADDRA => L_PC_O,                   ADDRB => I_PM_ADR(11 downto 2),
              CLKA  => I_CLK,                    CLKB  => I_CLK,
              DIA   => "0000",                   DIB   => "0000",
