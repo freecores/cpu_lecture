@@ -327,14 +327,14 @@ begin
                        
             when ALU_SREG =>
                 case I_BIT(2 downto 0) is
-                    when "000"  => Q_FLAGS(0) <= I_BIT(3);
-                    when "001"  => Q_FLAGS(1) <= I_BIT(3);
-                    when "010"  => Q_FLAGS(2) <= I_BIT(3);
-                    when "011"  => Q_FLAGS(3) <= I_BIT(3);
-                    when "100"  => Q_FLAGS(4) <= I_BIT(3);
-                    when "101"  => Q_FLAGS(5) <= I_BIT(3);
-                    when "110"  => Q_FLAGS(6) <= I_BIT(3);
-                    when others => Q_FLAGS(7) <= I_BIT(3);
+                    when "000"  => Q_FLAGS(0) <= not I_BIT(3);
+                    when "001"  => Q_FLAGS(1) <= not I_BIT(3);
+                    when "010"  => Q_FLAGS(2) <= not I_BIT(3);
+                    when "011"  => Q_FLAGS(3) <= not I_BIT(3);
+                    when "100"  => Q_FLAGS(4) <= not I_BIT(3);
+                    when "101"  => Q_FLAGS(5) <= not I_BIT(3);
+                    when "110"  => Q_FLAGS(6) <= not I_BIT(3);
+                    when others => Q_FLAGS(7) <= not I_BIT(3);
                 end case;
                 
             when ALU_SUB =>
