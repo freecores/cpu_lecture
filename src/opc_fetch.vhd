@@ -121,14 +121,14 @@ begin
     -- 1111 110r rrrr 0bbb - SBRC
     -- 1111 111r rrrr 0bbb - SBRS
     --
-    L_WAIT <= '0'  when (L_INVALIDATE = '1')
-         else '0'  when (I_INTVEC(5)  = '1')
+    L_WAIT <= '0'  when ((L_INVALIDATE = '1') or (I_INTVEC(5)  = '1'))
          else L_T0 when ((P_OPC(15 downto   9) = "1001000" )    -- LDS etc.
-                     or  (P_OPC(15 downto   8) = "10010101")    -- RET etc.
+                     or ((P_OPC(15 downto   8) = "10010101")    -- RET etc.
+                      and (P_OPC(3 downto 0) /= "1010"))        -- but not DEC
                      or  ((P_OPC(15 downto 10) = "100110")      -- SBIC, SBIS
-                       and P_OPC(8) = '1')
+                      and (P_OPC(8) = '1'))
                      or  (P_OPC(15 downto  10) = "111111"))     -- SBRC, SBRS
-        else  '0';
+         else '0';
 
     L_INVALIDATE <= I_CLR or I_SKIP;
 

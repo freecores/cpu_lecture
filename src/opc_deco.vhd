@@ -89,7 +89,7 @@ begin
         Q_WE_XYZS <= '0';
 
         case I_OPC(15 downto 10) is
-            when "000000" =>
+            when "000000" =>                            -- 0000 00xx xxxx xxxx
                 case I_OPC(9 downto 8) is
                     when "00" =>
                         --
@@ -161,7 +161,7 @@ begin
                 Q_WE_D <= '0' & I_OPC(11);  -- write Rd if SBC.
                 Q_WE_F <= '1';
 
-            when "000011" =>
+            when "000011" =>                            -- 0000 11xx xxxx xxxx
                 --
                 -- 0000 11rd dddd rrrr - ADD
                 --
@@ -169,7 +169,7 @@ begin
                 Q_WE_D <= "01";
                 Q_WE_F <= '1';
 
-            when "000100" => -- CPSE
+            when "000100" =>                            -- 0001 00xx xxxx xxxx
                 Q_ALU_OP <= ALU_SUB;
                 Q_RD_M <= I_T0;
                 if (I_T0 = '0') then        -- second cycle.
@@ -185,7 +185,7 @@ begin
                 Q_WE_D <= '0' & I_OPC(11);  -- write Rd if SUB.
                 Q_WE_F <= '1';
 
-            when "000111" =>
+            when "000111" =>                            -- 0001 11xx xxxx xxxx
                 --
                 -- 0001 11rd dddd rrrr - ADC
                 --
@@ -193,7 +193,7 @@ begin
                 Q_WE_D <= "01";
                 Q_WE_F <= '1';
 
-            when "001000" =>
+            when "001000" =>                            -- 0010 00xx xxxx xxxx
                 --
                 -- 0010 00rd dddd rrrr - AND
                 --
@@ -201,7 +201,7 @@ begin
                 Q_WE_D <= "01";
                 Q_WE_F <= '1';
 
-            when "001001" =>
+            when "001001" =>                            -- 0010 01xx xxxx xxxx
                 --
                 -- 0010 01rd dddd rrrr - EOR
                 --
@@ -209,7 +209,7 @@ begin
                 Q_WE_D <= "01";
                 Q_WE_F <= '1';
 
-            when "001010" => -- OR
+            when "001010" =>                            -- 0010 10xx xxxx xxxx
                 --
                 -- 0010 10rd dddd rrrr - OR
                 --
@@ -217,7 +217,7 @@ begin
                 Q_WE_D <= "01";
                 Q_WE_F <= '1';
 
-            when "001011" =>
+            when "001011" =>                            -- 0010 11xx xxxx xxxx
                 --
                 -- 0010 11rd dddd rrrr - MOV
                 --
@@ -293,7 +293,7 @@ begin
                 Q_RD_M <= not I_OPC(9);             -- '1'  if LDD
                 Q_WE_M <= '0' & I_OPC(9);           -- "01" if STD
 
-            when "100100" =>
+            when "100100" =>                            -- 1001 00xx xxxx xxxx
                 Q_IMM <= I_OPC(31 downto 16);   -- absolute address for LDS/STS
                 if (I_OPC(9) = '0') then        -- LDD / POP
                     --
@@ -359,9 +359,9 @@ begin
                     end case;
                 end if;
 
-            when "100101" =>
-                if (I_OPC(9) = '0') then
-                    if (I_OPC(3) = '0') then
+            when "100101" =>                            -- 1001 01xx xxxx xxxx
+                if (I_OPC(9) = '0') then                -- 1001 010
+                    if (I_OPC(3) = '0') then            -- 1001 010x xxxx 0xxx
                         --
                         --  1001 010d dddd 0000 - COM
                         --  1001 010d dddd 0001 - NEG
@@ -383,10 +383,10 @@ begin
                         end case;
                         Q_WE_D <= "01";
                         Q_WE_F <= '1';
-                    else
+                    else                                -- 1001 010x xxxx 1xxx
                         case I_OPC(2 downto 0) is
-                            when "000"  =>
-                                if (I_OPC(8)) = '0' then
+                            when "000"  =>              -- 1001 010x xxxx 1000
+                                if I_OPC(8) = '0' then  -- 1001 0100 xxxx 1000
                                     --
                                     --  1001 0100 0sss 1000 - BSET
                                     --  1001 0100 1sss 1000 - BCLR
@@ -394,7 +394,7 @@ begin
                                     Q_BIT(3 downto 0) <= I_OPC(7 downto 4);
                                     Q_ALU_OP <= ALU_SREG;
                                     Q_WE_F <= '1';
-                                else
+                                else                    -- 1001 0101 xxxx 1000
                                     --
                                     --  1001 0101 0000 1000 - RET
                                     --  1001 0101 0001 1000 - RETI
@@ -446,7 +446,7 @@ begin
                                     end case;
                                 end if;
 
-                            when "001"  =>
+                            when "001" =>               -- 1001 010x xxxx 1001
                                 --
                                 --  1001 0100 0000 1001 IJMP
                                 --  1001 0100 0001 1001 EIJMP   -- not mega8
@@ -461,7 +461,7 @@ begin
                                     Q_WE_XYZS <= '1';
                                 end if;
                             
-                            when "010"  =>
+                            when "010"  =>               -- 1001 010x xxxx 1010
                                 --
                                 --  1001 010d dddd 1010 - DEC
                                 --
@@ -469,7 +469,7 @@ begin
                                 Q_WE_D <= "01";
                                 Q_WE_F <= '1';
 
-                            when "011"  =>
+                            when "011"  =>               -- 1001 010x xxxx 1011
                                 --
                                 --  1001 0100 KKKK 1011 - DES   -- not mega8
                                 --
@@ -481,7 +481,7 @@ begin
                                 --
                                 Q_PC_OP <= PC_LD_I;
                      
-                            when "110" | "111"  =>
+                            when "110" | "111"  =>      -- 1001 010x xxxx 111x
                                 --
                                 --  1001 010k kkkk 111k - CALL (k = 0)
                                 --  kkkk kkkk kkkk kkkk
@@ -495,7 +495,7 @@ begin
                             when others =>
                         end case;
                     end if;
-                else
+                else            -- 1001 011
                     --
                     --  1001 0110 KKdd KKKK - ADIW
                     --  1001 0111 KKdd KKKK - SBIW
@@ -512,7 +512,7 @@ begin
                     Q_WE_F <= '1';
                 end if; -- I_OPC(9) = 0/1
 
-            when "100110" =>
+            when "100110" =>                            -- 1001 10xx xxxx xxxx
                 --
                 --  1001 1000 AAAA Abbb - CBI
                 --  1001 1001 AAAA Abbb - SBIC
@@ -537,7 +537,7 @@ begin
                     end if;
                 end if;
 
-            when "100111" => -- MUL
+            when "100111" =>                            -- 1001 11xx xxxx xxxx
                 --
                 --  1001 11rd dddd rrrr - MUL
                 --
@@ -546,7 +546,7 @@ begin
                  Q_WE_01 <= '1';
                  Q_WE_F <= '1';
 
-            when "101100" | "101101" =>
+            when "101100" | "101101" =>                 -- 1011 0xxx xxxx xxxx
                 --
                 -- 1011 0AAd dddd AAAA - IN
                 --
@@ -561,7 +561,7 @@ begin
 
                 Q_WE_D <= "01";
 
-            when "101110" | "101111" =>
+            when "101110" | "101111" =>                 -- 1011 1xxx xxxx xxxx
                 --
                 -- 1011 1AAr rrrr AAAA - OUT
                 --
@@ -606,7 +606,7 @@ begin
                 Q_IMM(7 downto 0) <= I_OPC(11 downto 8) & I_OPC(3 downto 0);
                 Q_WE_D <= "01";
 
-            when "111100" | "111101" =>
+            when "111100" | "111101" =>                 -- 1111 0xxx xxxx xxxx
                 --
                 -- 1111 00kk kkkk kbbb - BRBS
                 -- 1111 01kk kkkk kbbb - BRBC
@@ -619,7 +619,7 @@ begin
                                 & I_OPC(9) & I_OPC(9 downto 3)) + X"0001";
                 Q_PC_OP <= PC_BCC;
 
-            when "111110" =>
+            when "111110" =>                            -- 1111 10xx xxxx xxxx
                 --
                 -- 1111 100d dddd 0bbb - BLD
                 -- 1111 101d dddd 0bbb - BST
@@ -635,7 +635,7 @@ begin
                     Q_WE_F <= '1';
                 end if;
 
-            when "111111" =>
+            when "111111" =>                            -- 1111 11xx xxxx xxxx
                 --
                 -- 1111 110r rrrr 0bbb - SBRC
                 -- 1111 111r rrrr 0bbb - SBRS
