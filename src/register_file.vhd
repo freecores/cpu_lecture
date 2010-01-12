@@ -179,7 +179,7 @@ begin
             when "001101" => L_S <= R_R26;
             when "001110" => L_S <= R_R28;
             when "001111" => L_S <= R_R30;
-            when "101111" => L_S <= R_SP ( 7 downto 0) & X"00";     -- SPL
+            when "101110" => L_S <= R_SP ( 7 downto 0) & X"00";     -- SPL
             when others   => L_S <= S_FLAGS & R_SP (15 downto 8);   -- SR/SPH
         end case;
     end process;
