@@ -113,6 +113,8 @@ begin
 
     -- Two cycle opcodes:
     --
+    -- 10q0 qq0d dddd 1qqq - LDD (Y + q)
+    -- 10q0 qq0d dddd 0qqq - LDD (Z + q)
     -- 1001 000d dddd .... - LDS etc.
     -- 1001 0101 0000 1000 - RET
     -- 1001 0101 0001 1000 - RETI
@@ -122,12 +124,15 @@ begin
     -- 1111 111r rrrr 0bbb - SBRS
     --
     L_WAIT <= '0'  when ((L_INVALIDATE = '1') or (I_INTVEC(5)  = '1'))
-         else L_T0 when ((P_OPC(15 downto   9) = "1001000" )    -- LDS etc.
-                     or ((P_OPC(15 downto   8) = "10010101")    -- RET etc.
-                      and (P_OPC(3 downto 0) /= "1010"))        -- but not DEC
-                     or  ((P_OPC(15 downto 10) = "100110")      -- SBIC, SBIS
-                      and (P_OPC(8) = '1'))
-                     or  (P_OPC(15 downto  10) = "111111"))     -- SBRC, SBRS
+         else L_T0 when ( (   (P_OPC(15 downto  14) = "10" )        -- LDD
+                          and (P_OPC(12) = '0')
+                          and (P_OPC( 9) = '0') )
+                     or (      P_OPC(15 downto   9) = "1001000")    -- LDS etc.
+                     or ( (    P_OPC(15 downto   8) = "10010101")   -- RET etc.
+                          and (P_OPC( 3 downto 0) /= "1010"))   -- but not DEC
+                     or ( (    P_OPC(15 downto 10) = "100110")      -- SBI[CS]
+                          and (P_OPC(8) = '1'))
+                     or  (P_OPC(15 downto  10) = "111111"))         -- SBR[CS]
          else '0';
 
     L_INVALIDATE <= I_CLR or I_SKIP;

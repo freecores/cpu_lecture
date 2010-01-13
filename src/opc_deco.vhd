@@ -290,8 +290,12 @@ begin
                 else                        Q_AMOD <= AMOD_Yq;
                 end if;
 
-                Q_RD_M <= not I_OPC(9);             -- '1'  if LDD
-                Q_WE_M <= '0' & I_OPC(9);           -- "01" if STD
+                if (I_OPC(9) = '0') then            -- LDD
+                    Q_RD_M <= I_T0 ;
+                    Q_WE_D <= '0' & not I_T0;
+                else                                -- STD
+                    Q_WE_M <= '0' & I_OPC(9);
+                end if;
 
             when "100100" =>                            -- 1001 00xx xxxx xxxx
                 Q_IMM <= I_OPC(31 downto 16);   -- absolute address for LDS/STS
