@@ -291,6 +291,7 @@ begin
                 end if;
 
                 if (I_OPC(9) = '0') then            -- LDD
+                    Q_RSEL <= RS_DIN;
                     Q_RD_M <= I_T0 ;
                     Q_WE_D <= '0' & not I_T0;
                 else                                -- STD
