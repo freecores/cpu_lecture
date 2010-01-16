@@ -564,6 +564,7 @@ begin
                 Q_IMM(4) <= I_OPC(9);
                 Q_IMM(6 downto 5) <= "01" + ('0' & I_OPC(10 downto 10));
 
+                Q_RD_M <= '1';
                 Q_WE_D <= "01";
 
             when "101110" | "101111" =>                 -- 1011 1xxx xxxx xxxx
