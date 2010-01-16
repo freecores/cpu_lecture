@@ -106,33 +106,23 @@ package common is
     -- address modes used
     --
     constant AMOD_ABS : std_logic_vector(5 downto 0) := AO_0  & AS_IMM; -- IMM
-    constant AMOD_X   : std_logic_vector(5 downto 0) := AO_0  & AS_X;   -- (X)
-    constant AMOD_Xq  : std_logic_vector(5 downto 0) := AO_Q  & AS_X;   -- (X+q)
-    constant AMOD_Xi  : std_logic_vector(5 downto 0) := AO_i  & AS_X;   -- (X++)
-    constant AMOD_dX  : std_logic_vector(5 downto 0) := AO_d  & AS_X;   -- (--X)
-    constant AMOD_Y   : std_logic_vector(5 downto 0) := AO_0  & AS_Y;   -- (Y)
-    constant AMOD_Yq  : std_logic_vector(5 downto 0) := AO_Q  & AS_Y;   -- (Y+q)
-    constant AMOD_Yi  : std_logic_vector(5 downto 0) := AO_i  & AS_Y;   -- (Y++)
-    constant AMOD_dY  : std_logic_vector(5 downto 0) := AO_d  & AS_Y;   -- (--Y)
-    constant AMOD_Z   : std_logic_vector(5 downto 0) := AO_0  & AS_Z;   -- (Z)
-    constant AMOD_Zq  : std_logic_vector(5 downto 0) := AO_Q  & AS_Z;   -- (Z+q)
-    constant AMOD_Zi  : std_logic_vector(5 downto 0) := AO_i  & AS_Z;   -- (Z++)
-    constant AMOD_dZ  : std_logic_vector(5 downto 0) := AO_d  & AS_Z;   -- (--Z)
-    constant AMOD_SPi : std_logic_vector(5 downto 0) := AO_i  & AS_SP;  -- (SP++)
-    constant AMOD_SPii: std_logic_vector(5 downto 0) := AO_ii & AS_SP;  -- (SP++)
-    constant AMOD_dSP : std_logic_vector(5 downto 0) := AO_d  & AS_SP;  -- (--SP)
-    constant AMOD_ddSP: std_logic_vector(5 downto 0) := AO_dd & AS_SP;  -- (--SP)
-    
-    -----------------------------------------------------------------------
+    constant AMOD_X   : std_logic_vector(5 downto 0) := AO_0  & AS_X;   -- X
+    constant AMOD_Xq  : std_logic_vector(5 downto 0) := AO_Q  & AS_X;   -- X+q
+    constant AMOD_Xi  : std_logic_vector(5 downto 0) := AO_i  & AS_X;   -- X+
+    constant AMOD_dX  : std_logic_vector(5 downto 0) := AO_d  & AS_X;   -- -X
+    constant AMOD_Y   : std_logic_vector(5 downto 0) := AO_0  & AS_Y;   -- Y
+    constant AMOD_Yq  : std_logic_vector(5 downto 0) := AO_Q  & AS_Y;   -- Y+q
+    constant AMOD_Yi  : std_logic_vector(5 downto 0) := AO_i  & AS_Y;   -- Y+
+    constant AMOD_dY  : std_logic_vector(5 downto 0) := AO_d  & AS_Y;   -- -Y
+    constant AMOD_Z   : std_logic_vector(5 downto 0) := AO_0  & AS_Z;   -- Z
+    constant AMOD_Zq  : std_logic_vector(5 downto 0) := AO_Q  & AS_Z;   -- Z+q
+    constant AMOD_Zi  : std_logic_vector(5 downto 0) := AO_i  & AS_Z;   -- Z+
+    constant AMOD_dZ  : std_logic_vector(5 downto 0) := AO_d  & AS_Z;   -- -Z
+    constant AMOD_iSP : std_logic_vector(5 downto 0) := AO_i  & AS_SP;  -- +SP
+    constant AMOD_iiSP: std_logic_vector(5 downto 0) := AO_ii & AS_SP;  -- ++SP
+    constant AMOD_SPd : std_logic_vector(5 downto 0) := AO_d  & AS_SP;  -- SP-
+    constant AMOD_SPdd: std_logic_vector(5 downto 0) := AO_dd & AS_SP;  -- SP--
  
-    -- Stack pointer manipulations.
-    --
-    constant SP_NOP : std_logic_vector(2 downto 0) := "000";
-    constant SP_ADD1: std_logic_vector(2 downto 0) := "001";
-    constant SP_ADD2: std_logic_vector(2 downto 0) := "010";
-    constant SP_SUB1: std_logic_vector(2 downto 0) := "011";
-    constant SP_SUB2: std_logic_vector(2 downto 0) := "100";
-    
     -----------------------------------------------------------------------
     --
     -- ALU multiplexers.

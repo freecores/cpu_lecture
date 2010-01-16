@@ -249,19 +249,35 @@ begin
         end case;
     end process;
 
-    -- the value of the X/Y/Z/SP register after a potential PRE-decrement
-    -- (by 1 or 2) and POST-increment (by 1 or 2).
+    -- the value of the X/Y/Z/SP register after a potential PRE-inc/decrement
+    -- (by 1 or 2) and POST-inc/decrement (by 1 or 2).
     --
-    process(I_AMOD(5 downto 3), I_IMM)
+    process(I_AMOD, I_IMM)
     begin
-        case I_AMOD(5 downto 3) is
-            when AO_0   => L_PRE <= X"0000";    L_POST <= X"0000";
-            when AO_i   => L_PRE <= X"0000";    L_POST <= X"0001";
-            when AO_ii  => L_PRE <= X"0000";    L_POST <= X"0002";
-            when AO_q   => L_PRE <= I_IMM;      L_POST <= X"0000";
-            when AO_d   => L_PRE <= X"FFFF";    L_POST <= X"FFFF";
-            when AO_dd  => L_PRE <= X"FFFE";    L_POST <= X"FFFE";
-            when others => L_PRE <= X"0000";    L_POST <= X"0000";
+        case I_AMOD is
+            when AMOD_Xq | AMOD_Yq | AMOD_Zq  =>
+                L_PRE <= I_IMM;      L_POST <= X"0000";
+
+            when AMOD_Xi | AMOD_Yi | AMOD_Zi  =>
+                L_PRE <= X"0000";    L_POST <= X"0001";
+
+            when AMOD_dX  | AMOD_dY  | AMOD_dZ  =>
+                L_PRE <= X"FFFF";    L_POST <= X"FFFF";
+
+            when AMOD_iSP =>
+                L_PRE <= X"0001";    L_POST <= X"0001";
+
+            when AMOD_iiSP=>
+                L_PRE <= X"0001";    L_POST <= X"0002";
+
+            when AMOD_SPd =>
+                L_PRE <= X"0000";    L_POST <= X"FFFF";
+
+            when AMOD_SPdd=>
+                L_PRE <= X"FFFF";    L_POST <= X"FFFE";
+
+            when others =>
+                L_PRE <= X"0000";    L_POST <= X"0000";
         end case;
     end process;
 

@@ -98,7 +98,7 @@ begin
                         --
                         if (I_OPC(5)) = '1' then   -- interrupt
                             Q_ALU_OP <= ALU_INTR;
-                            Q_AMOD <= AMOD_ddSP;
+                            Q_AMOD <= AMOD_SPdd;
                             Q_JADR <= "0000000000" & I_OPC(4 downto 0) & "0";
                             Q_PC_OP <= PC_LD_I;
                             Q_WE_F <= '1';
@@ -331,7 +331,7 @@ begin
                         when "1100" => Q_AMOD <= AMOD_X;    Q_WE_XYZS <= '0';
                         when "1101" => Q_AMOD <= AMOD_Xi;
                         when "1110" => Q_AMOD <= AMOD_dX;
-                        when "1111" => Q_AMOD <= AMOD_SPi;
+                        when "1111" => Q_AMOD <= AMOD_iSP;
                         when others =>                      Q_WE_XYZS <= '0';
                     end case;
                 else                        -- STD / PUSH
@@ -359,7 +359,7 @@ begin
                         when "1100" => Q_AMOD <= AMOD_X;    Q_WE_XYZS <= '0';
                         when "1101" => Q_AMOD <= AMOD_Xi;
                         when "1110" => Q_AMOD <= AMOD_dX;
-                        when "1111" => Q_AMOD <= AMOD_dSP;
+                        when "1111" => Q_AMOD <= AMOD_SPd;
                         when others =>
                     end case;
                 end if;
@@ -413,7 +413,7 @@ begin
                                     --
                                     case I_OPC(7 downto 4) is
                                         when "0000" =>  -- RET
-                                            Q_AMOD <= AMOD_SPii;
+                                            Q_AMOD <= AMOD_iiSP;
                                             if (I_T0 = '1') then
                                                 Q_RD_M <= '1';
                                             else
@@ -424,7 +424,7 @@ begin
                                         when "0001" =>  -- RETI
                                             Q_ALU_OP <= ALU_INTR;
                                             Q_IMM(6) <= '1';
-                                            Q_AMOD <= AMOD_SPii;
+                                            Q_AMOD <= AMOD_iiSP;
                                             if (I_T0 = '1') then
                                                 Q_RD_M <= '1';
                                             else
@@ -461,7 +461,7 @@ begin
                                 Q_PC_OP <= PC_LD_Z;
                                 if (I_OPC(8) = '1') then        -- ICALL
                                     Q_ALU_OP <= ALU_PC_1;
-                                    Q_AMOD <= AMOD_ddSP;
+                                    Q_AMOD <= AMOD_SPdd;
                                     Q_WE_M <= "11";
                                     Q_WE_XYZS <= '1';
                                 end if;
@@ -492,7 +492,7 @@ begin
                                 --  kkkk kkkk kkkk kkkk
                                 --
                                 Q_ALU_OP <= ALU_PC_2;
-                                Q_AMOD <= AMOD_ddSP;
+                                Q_AMOD <= AMOD_SPdd;
                                 Q_PC_OP <= PC_LD_I;
                                 Q_WE_M <= "11";     -- both PC bytes
                                 Q_WE_XYZS <= '1';
@@ -596,7 +596,7 @@ begin
                 Q_JADR <= I_PC + (I_OPC(11) & I_OPC(11) & I_OPC(11) & I_OPC(11)
                                 & I_OPC(11 downto 0)) + X"0001";
                 Q_ALU_OP <= ALU_PC_1;
-                Q_AMOD <= AMOD_ddSP;
+                Q_AMOD <= AMOD_SPdd;
                 Q_PC_OP <= PC_LD_I;
                 Q_WE_M <= "11";     -- both PC bytes
                 Q_WE_XYZS <= '1';
