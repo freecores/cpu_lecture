@@ -301,6 +301,7 @@ begin
 
             when ALU_ROR =>
                 L_DOUT <= L_ROR_D & L_ROR_D;
+                Q_FLAGS(0) <= L_D8(0);                              -- Carry
                 Q_FLAGS(1) <= ze(L_ROR_D);                          -- Zero
                 Q_FLAGS(2) <= I_FLAGS(0);                           -- Negative
                 Q_FLAGS(3) <= I_FLAGS(0) xor L_D8(0);               -- Overflow
