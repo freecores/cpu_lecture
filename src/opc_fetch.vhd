@@ -66,6 +66,12 @@ signal P_PC             : std_logic_vector(15 downto 0);
 signal L_INVALIDATE     : std_logic;
 signal L_LONG_OP        : std_logic;
 signal L_NEXT_PC        : std_logic_vector(15 downto 0);
+signal L_OPC_10q0_qq0   : std_logic;
+signal L_OPC_9_000      : std_logic;
+signal L_OPC_9_5_000x_8 : std_logic;
+signal L_OPC_9_5_110x_8 : std_logic;
+signal L_OPC_9_10x1     : std_logic;
+signal L_OPC_F_11       : std_logic;
 signal L_PC             : std_logic_vector(15 downto 0);
 signal L_T0             : std_logic;
 signal L_WAIT           : std_logic;
@@ -113,27 +119,38 @@ begin
 
     -- Two cycle opcodes:
     --
-    -- 10q0 qq0d dddd 1qqq - LDD (Y + q)
-    -- 10q0 qq0d dddd 0qqq - LDD (Z + q)
-    -- 1001 000d dddd .... - LDS etc.
-    -- 1001 0101 0000 1000 - RET
-    -- 1001 0101 0001 1000 - RETI
-    -- 1001 1001 AAAA Abbb - SBIC
-    -- 1001 1011 AAAA Abbb - SBIS
-    -- 1111 110r rrrr 0bbb - SBRC
-    -- 1111 111r rrrr 0bbb - SBRS
+    -- 10q0 qq0d dddd 1qqq - LDD (Y + q)    L_OPC_10q0_qq0
+    -- 10q0 qq0d dddd 0qqq - LDD (Z + q)    L_OPC_10q0_qq0
+    -- 1001 000d dddd .... - LDS etc.       L_OPC_9_000
+    -- 1001 0101 0000 1000 - RET            L_OPC_9_5_000x_8
+    -- 1001 0101 0001 1000 - RETI           L_OPC_9_5_000x_8
+    -- 1001 0101 1100 1000 - LPM            L_OPC_9_5_110x_8
+    -- 1001 0101 1101 1000 - ELPM           L_OPC_9_5_110x_8
+    -- 1001 1001 AAAA Abbb - SBIC           L_OPC_9_10x1
+    -- 1001 1011 AAAA Abbb - SBIS           L_OPC_9_10x1
+    -- 1111 110r rrrr 0bbb - SBRC           L_OPC_F_11
+    -- 1111 111r rrrr 0bbb - SBRS           L_OPC_F_11
     --
-    L_WAIT <= '0'  when ((L_INVALIDATE = '1') or (I_INTVEC(5)  = '1'))
-         else L_T0 when ( (   (P_OPC(15 downto  14) = "10" )        -- LDD
-                          and (P_OPC(12) = '0')
-                          and (P_OPC( 9) = '0') )
-                     or (      P_OPC(15 downto   9) = "1001000")    -- LDS etc.
-                     or ( (    P_OPC(15 downto   8) = "10010101")   -- RET etc.
-                          and (P_OPC( 3 downto 0) /= "1010"))   -- but not DEC
-                     or ( (    P_OPC(15 downto 10) = "100110")      -- SBI[CS]
-                          and (P_OPC(8) = '1'))
-                     or  (P_OPC(15 downto  10) = "111111"))         -- SBR[CS]
-         else '0';
+    L_OPC_10q0_qq0   <= '1' when ((P_OPC(15 downto 14) = "10" )
+                             and  (P_OPC(12) = '0')
+                             and  (P_OPC( 9) = '0'))                   else '0';
+    L_OPC_9_000      <= '1' when ( P_OPC(15 downto  9) = "1001000")    else '0';
+    L_OPC_9_5_000x_8 <= '1' when ((P_OPC(15 downto  5) = "10010101000")
+                             and  (P_OPC( 3 downto  0) = "1000"))      else '0';
+    L_OPC_9_5_110x_8 <= '1' when ((P_OPC(15 downto  5) = "10010101110")
+                             and  (P_OPC( 3 downto  0) = "1000"))      else '0';
+    L_OPC_9_10x1     <= '1' when ((P_OPC(15 downto 10) = "100110")
+                             and  (P_OPC(8) = '1'))                    else '0';
+    L_OPC_F_11       <= '1' when ( P_OPC(15 downto  10) = "111111")    else '0';
+
+    L_WAIT <= L_T0 and (L_OPC_10q0_qq0   or     -- LDD
+                        L_OPC_9_000      or     -- LDS, LD, LPM, POP
+                        L_OPC_9_5_000x_8 or     -- RET, RETI, LPM
+                        L_OPC_9_5_110x_8 or     -- LPM, ELPM
+                        L_OPC_9_10x1     or     -- SBIC, SBIS
+                        L_OPC_F_11)             -- SBRC, SBRS
+                   and (not L_INVALIDATE)
+                   and (not I_INTVEC(5));
 
     L_INVALIDATE <= I_CLR or I_SKIP;
 
