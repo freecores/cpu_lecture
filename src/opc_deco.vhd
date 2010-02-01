@@ -170,8 +170,10 @@ begin
                 Q_WE_F <= '1';
 
             when "000100" =>                            -- 0001 00xx xxxx xxxx
+                --
+                -- 0001 00rd dddd rrrr - CPSE
+                --
                 Q_ALU_OP <= ALU_SUB;
-                Q_RD_M <= I_T0;
                 if (I_T0 = '0') then        -- second cycle.
                     Q_PC_OP <= PC_SKIP_Z;
                 end if;
@@ -292,7 +294,7 @@ begin
 
                 if (I_OPC(9) = '0') then            -- LDD
                     Q_RSEL <= RS_DIN;
-                    Q_RD_M <= I_T0 ;
+                    Q_RD_M <= I_T0;
                     Q_WE_D <= '0' & not I_T0;
                 else                                -- STD
                     Q_WE_M <= '0' & I_OPC(9);
@@ -303,18 +305,18 @@ begin
                 if (I_OPC(9) = '0') then        -- LDD / POP
                     --
                     -- 1001 00-0d dddd 0000 - LDS
-                    -- 1001 00-0d dddd 0001 - LD Rd, Z+
-                    -- 1001 00-0d dddd 0010 - LD Rd, -Z
-                    -- 1001 00-0d dddd 0100 - (ii)  LPM Rd, (Z)
-                    -- 1001 00-0d dddd 0101 - (iii) LPM Rd, (Z+)
-                    -- 1001 00-0d dddd 0110 - ELPM Z        --- not mega8
-                    -- 1001 00-0d dddd 0111 - ELPM Z+       --- not mega8
-                    -- 1001 00-0d dddd 1001 - LD Rd, Y+
-                    -- 1001 00-0d dddd 1010 - LD Rd, -Y
-                    -- 1001 00-0d dddd 1100 - LD Rd, X
-                    -- 1001 00-0d dddd 1101 - LD Rd, X+
-                    -- 1001 00-0d dddd 1110 - LD Rd, -X
-                    -- 1001 00-0d dddd 1111 - POP Rd
+                    -- 1001 00-0d dddd 0001 - LD   Rd, Z+
+                    -- 1001 00-0d dddd 0010 - LD   Rd, -Z
+                    -- 1001 00-0d dddd 0100 - LPM  Rd, (Z)      (ii)
+                    -- 1001 00-0d dddd 0101 - LPM  Rd, (Z+)     (iii)
+                    -- 1001 00-0d dddd 0110 - ELPM Z            --- not mega8
+                    -- 1001 00-0d dddd 0111 - ELPM Z+           --- not mega8
+                    -- 1001 00-0d dddd 1001 - LD   Rd, Y+
+                    -- 1001 00-0d dddd 1010 - LD   Rd, -Y
+                    -- 1001 00-0d dddd 1100 - LD   Rd, X
+                    -- 1001 00-0d dddd 1101 - LD   Rd, X+
+                    -- 1001 00-0d dddd 1110 - LD   Rd, -X
+                    -- 1001 00-0d dddd 1111 - POP  Rd
                     --
                     Q_RSEL <= RS_DIN;
                     Q_RD_M <= I_T0;
@@ -366,140 +368,171 @@ begin
 
             when "100101" =>                            -- 1001 01xx xxxx xxxx
                 if (I_OPC(9) = '0') then                -- 1001 010
-                    if (I_OPC(3) = '0') then            -- 1001 010x xxxx 0xxx
-                        --
-                        --  1001 010d dddd 0000 - COM
-                        --  1001 010d dddd 0001 - NEG
-                        --  1001 010d dddd 0010 - SWAP
-                        --  1001 010d dddd 0011 - INC
-                        --  1001 010d dddd 0101 - ASR
-                        --  1001 010d dddd 0110 - LSR
-                        --  1001 010d dddd 0111 - ROR
-                        --
-                        case I_OPC(2 downto 0) is
-                            when "000"  => Q_ALU_OP <= ALU_COM;
-                            when "001"  => Q_ALU_OP <= ALU_NEG;
-                            when "010"  => Q_ALU_OP <= ALU_SWAP;
-                            when "011"  => Q_ALU_OP <= ALU_INC;
-                            when "101"  => Q_ALU_OP <= ALU_ASR;
-                            when "110"  => Q_ALU_OP <= ALU_LSR;
-                            when "111"  => Q_ALU_OP <= ALU_ROR;
-                            when others =>
-                        end case;
-                        Q_WE_D <= "01";
-                        Q_WE_F <= '1';
-                    else                                -- 1001 010x xxxx 1xxx
-                        case I_OPC(2 downto 0) is
-                            when "000"  =>              -- 1001 010x xxxx 1000
-                                if I_OPC(8) = '0' then  -- 1001 0100 xxxx 1000
-                                    --
-                                    --  1001 0100 0sss 1000 - BSET
-                                    --  1001 0100 1sss 1000 - BCLR
-                                    --
+                    case I_OPC(3 downto 0) is
+                        when "0000" =>
+                            --
+                            --  1001 010d dddd 0000 - COM Rd
+                            --
+                            Q_ALU_OP <= ALU_COM;
+                            Q_WE_D <= "01";
+                            Q_WE_F <= '1';
+
+                        when "0001" =>
+                            --
+                            --  1001 010d dddd 0001 - NEG Rd
+                            --
+                            Q_ALU_OP <= ALU_NEG;
+                            Q_WE_D <= "01";
+                            Q_WE_F <= '1';
+
+                        when "0010" =>
+                            --
+                            --  1001 010d dddd 0010 - SWAP Rd
+                            --
+                            Q_ALU_OP <= ALU_SWAP;
+                            Q_WE_D <= "01";
+                            Q_WE_F <= '1';
+
+                        when "0011" =>
+                            --
+                            --  1001 010d dddd 0011 - INC Rd
+                            --
+                            Q_ALU_OP <= ALU_INC;
+                            Q_WE_D <= "01";
+                            Q_WE_F <= '1';
+
+                        when "0101" =>
+                            --
+                            --  1001 010d dddd 0101 - ASR Rd
+                            --
+                            Q_ALU_OP <= ALU_ASR;
+                            Q_WE_D <= "01";
+                            Q_WE_F <= '1';
+
+                        when "0110" =>
+                            --
+                            --  1001 010d dddd 0110 - LSR Rd
+                            --
+                            Q_ALU_OP <= ALU_LSR;
+                            Q_WE_D <= "01";
+                            Q_WE_F <= '1';
+
+                        when "0111" =>
+                            --
+                            --  1001 010d dddd 0111 - ROR Rd
+                            --
+                            Q_ALU_OP <= ALU_ROR;
+                                        Q_WE_D <= "01";
+                                        Q_WE_F <= '1';
+
+                        when "1000"  =>             -- 1001 010x xxxx 1000
+                            if I_OPC(8) = '0' then  -- 1001 0100 xxxx 1000
+                                --
+                                --  1001 0100 0sss 1000 - BSET
+                                --  1001 0100 1sss 1000 - BCLR
+                                --
                                     Q_BIT(3 downto 0) <= I_OPC(7 downto 4);
                                     Q_ALU_OP <= ALU_SREG;
                                     Q_WE_F <= '1';
-                                else                    -- 1001 0101 xxxx 1000
-                                    --
-                                    --  1001 0101 0000 1000 - RET
-                                    --  1001 0101 0001 1000 - RETI
-                                    --  1001 0101 1000 1000 - SLEEP
-                                    --  1001 0101 1001 1000 - BREAK
-                                    --  1001 0101 1100 1000 - LPM     [ R0,(Z) ]
-                                    --  1001 0101 1101 1000 - ELPM   not mega8
-                                    --  1001 0101 1110 1000 - SPM
-                                    --  1001 0101 1111 1000 - SPM #2
-                                    --  1001 0101 1010 1000 - WDR
-                                    --
-                                    case I_OPC(7 downto 4) is
-                                        when "0000" =>  -- RET
-                                            Q_AMOD <= AMOD_iiSP;
-                                            if (I_T0 = '1') then
-                                                Q_RD_M <= '1';
-                                            else
-                                                Q_PC_OP <= PC_LD_S;
-                                                Q_WE_XYZS <= not I_T0;
-                                            end if;
+                            else                    -- 1001 0101 xxxx 1000
+                                --
+                                --  1001 0101 0000 1000 - RET
+                                --  1001 0101 0001 1000 - RETI
+                                --  1001 0101 1000 1000 - SLEEP
+                                --  1001 0101 1001 1000 - BREAK
+                                --  1001 0101 1100 1000 - LPM     [ R0,(Z) ]
+                                --  1001 0101 1101 1000 - ELPM    not mega8
+                                --  1001 0101 1110 1000 - SPM
+                                --  1001 0101 1111 1000 - SPM #2
+                                --  1001 0101 1010 1000 - WDR
+                                --
+                                case I_OPC(7 downto 4) is
+                                    when "0000" =>  -- RET
+                                        Q_AMOD <= AMOD_iiSP;
+                                        Q_RD_M <= I_T0;
+                                        Q_WE_XYZS <= not I_T0;
+                                        if (I_T0 = '0') then
+                                            Q_PC_OP <= PC_LD_S;
+                                        end if;
                                             
-                                        when "0001" =>  -- RETI
-                                            Q_ALU_OP <= ALU_INTR;
-                                            Q_IMM(6) <= '1';
-                                            Q_AMOD <= AMOD_iiSP;
-                                            if (I_T0 = '1') then
-                                                Q_RD_M <= '1';
-                                            else
-                                                Q_PC_OP <= PC_LD_S;
-                                                Q_WE_XYZS <= not I_T0;
-                                            end if;
+                                    when "0001" =>  -- RETI
+                                        Q_ALU_OP <= ALU_INTR;
+                                        Q_IMM(6) <= '1';
+                                        Q_AMOD <= AMOD_iiSP;
+                                        Q_RD_M <= I_T0;
+                                        Q_WE_XYZS <= not I_T0;
+                                        if (I_T0 = '0') then
+                                            Q_PC_OP <= PC_LD_S;
+                                        end if;
                                             
-                                        when "1000" =>  -- (i) LPM R0, (Z)
-                                            Q_DDDDD <= "00000";
-                                            Q_AMOD <= AMOD_Z;
-                                            Q_PMS <= '1';
-                                            Q_WE_D <= '0' & not I_T0;
+                                    when "1100" =>  -- (i) LPM R0, (Z)
+                                        Q_DDDDD <= "00000";
+                                        Q_AMOD <= AMOD_Z;
+                                        Q_PMS <= '1';
+                                        Q_WE_D <= '0' & not I_T0;
                                         
-                                        when "1110" =>  -- SPM
-                                            Q_DDDDD <= "00000";
-                                            Q_AMOD <= AMOD_Z;
-                                            Q_PMS <= '1';
-                                            Q_WE_M <= "01";
+                                    when "1110" =>  -- SPM
+                                        Q_ALU_OP <= ALU_D_MV_Q;
+                                        Q_DDDDD <= "00000";
+                                        Q_AMOD <= AMOD_Z;
+                                        Q_PMS <= '1';
+                                        Q_WE_M <= "01";
                                             
-                                        when "1111" =>  -- SPM #2
-                                            -- page write: not su[pported
+                                    when "1111" =>  -- SPM #2
+                                        -- page write: not supported
 
-                                        when others =>
-                                    end case;
-                                end if;
+                                    when others =>
+                                end case;
+                            end if;
 
-                            when "001" =>               -- 1001 010x xxxx 1001
-                                --
-                                --  1001 0100 0000 1001 IJMP
-                                --  1001 0100 0001 1001 EIJMP   -- not mega8
-                                --  1001 0101 0000 1001 ICALL
-                                --  1001 0101 0001 1001 EICALL   -- not mega8
-                                --
-                                Q_PC_OP <= PC_LD_Z;
-                                if (I_OPC(8) = '1') then        -- ICALL
-                                    Q_ALU_OP <= ALU_PC_1;
-                                    Q_AMOD <= AMOD_SPdd;
-                                    Q_WE_M <= "11";
-                                    Q_WE_XYZS <= '1';
-                                end if;
-                            
-                            when "010"  =>               -- 1001 010x xxxx 1010
-                                --
-                                --  1001 010d dddd 1010 - DEC
-                                --
-                                Q_ALU_OP <= ALU_DEC;
-                                Q_WE_D <= "01";
-                                Q_WE_F <= '1';
-
-                            when "011"  =>               -- 1001 010x xxxx 1011
-                                --
-                                --  1001 0100 KKKK 1011 - DES   -- not mega8
-                                --
-                                
-                            when "100" | "101"  =>
-                                --
-                                --  1001 010k kkkk 110k - JMP (k = 0 for 16 bit)
-                                --  kkkk kkkk kkkk kkkk
-                                --
-                                Q_PC_OP <= PC_LD_I;
-                     
-                            when "110" | "111"  =>      -- 1001 010x xxxx 111x
-                                --
-                                --  1001 010k kkkk 111k - CALL (k = 0)
-                                --  kkkk kkkk kkkk kkkk
-                                --
-                                Q_ALU_OP <= ALU_PC_2;
+                        when "1001" =>               -- 1001 010x xxxx 1001
+                            --
+                            --  1001 0100 0000 1001 IJMP
+                            --  1001 0100 0001 1001 EIJMP   -- not mega8
+                            --  1001 0101 0000 1001 ICALL
+                            --  1001 0101 0001 1001 EICALL   -- not mega8
+                            --
+                            Q_PC_OP <= PC_LD_Z;
+                            if (I_OPC(8) = '1') then        -- ICALL
+                                Q_ALU_OP <= ALU_PC_1;
                                 Q_AMOD <= AMOD_SPdd;
-                                Q_PC_OP <= PC_LD_I;
-                                Q_WE_M <= "11";     -- both PC bytes
+                                Q_WE_M <= "11";
                                 Q_WE_XYZS <= '1';
+                            end if;
+                            
+                        when "1010"  =>              -- 1001 010x xxxx 1010
+                            --
+                            --  1001 010d dddd 1010 - DEC Rd
+                            --
+                            Q_ALU_OP <= ALU_DEC;
+                            Q_WE_D <= "01";
+                            Q_WE_F <= '1';
 
-                            when others =>
-                        end case;
-                    end if;
+                        when "1011"  =>              -- 1001 010x xxxx 1011
+                            --
+                            --  1001 0100 KKKK 1011 - DES   -- not mega8
+                            --
+                                
+                        when "1100" | "1101"  =>
+                            --
+                            --  1001 010k kkkk 110k - JMP (k = 0 for 16 bit)
+                            --  kkkk kkkk kkkk kkkk
+                            --
+                            Q_PC_OP <= PC_LD_I;
+                     
+                        when "1110" | "1111"  =>      -- 1001 010x xxxx 111x
+                            --
+                            --  1001 010k kkkk 111k - CALL (k = 0)
+                            --  kkkk kkkk kkkk kkkk
+                            --
+                            Q_ALU_OP <= ALU_PC_2;
+                            Q_AMOD <= AMOD_SPdd;
+                            Q_PC_OP <= PC_LD_I;
+                            Q_WE_M <= "11";     -- both PC bytes
+                            Q_WE_XYZS <= '1';
+
+                        when others =>
+                    end case;
                 else            -- 1001 011
                     --
                     --  1001 0110 KKdd KKKK - ADIW
