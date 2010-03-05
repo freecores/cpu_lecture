@@ -57,19 +57,34 @@ begin
                 A(4) or A(5) or A(6) or A(7));
 end;
 
-function cy(D, R, S: std_logic) return std_logic is
+function cy_add(Rd, Rr, R: std_logic) return std_logic is
 begin
-    return (D and R) or (D and not S) or (R and not S);
+    return (Rd and Rr) or (Rd and (not R)) or ((not R) and Rr);
 end;
 
-function ov(D, R, S: std_logic) return std_logic is
+function ov_add(Rd, Rr, R: std_logic) return std_logic is
 begin
-    return (D and R and (not S)) or ((not D) and (not R) and S);
+    return (Rd and Rr and (not R)) or ((not Rd) and (not Rr) and R);
 end;
 
-function si(D, R, S: std_logic) return std_logic is
+function si_add(Rd, Rr, R: std_logic) return std_logic is
 begin
-    return S xor ov(D, R, S);
+    return R xor ov_add(Rd, Rr, R);
+end;
+
+function cy_sub(Rd, Rr, R: std_logic) return std_logic is
+begin
+    return ((not Rd) and Rr) or (Rr and R) or (R and (not Rd));
+end;
+
+function ov_sub(Rd, Rr, R: std_logic) return std_logic is
+begin
+    return (Rd and (not Rr) and (not R)) or ((not Rd) and Rr and R);
+end;
+
+function si_sub(Rd, Rr, R: std_logic) return std_logic is
+begin
+    return R xor ov_sub(Rd, Rr, R);
 end;
 
 signal L_ADC_DR     : std_logic_vector( 7 downto 0);    -- D + R + Carry
@@ -129,21 +144,21 @@ begin
         case I_ALU_OP is
             when ALU_ADC =>
                 L_DOUT <= L_ADC_DR & L_ADC_DR;
-                Q_FLAGS(0) <= cy(L_D8(7), L_RI8(7), L_ADC_DR(7));   -- Carry
-                Q_FLAGS(1) <= ze(L_ADC_DR);                         -- Zero
-                Q_FLAGS(2) <= L_ADC_DR(7);                          -- Negative
-                Q_FLAGS(3) <= ov(L_D8(7), L_RI8(7), L_ADC_DR(7));   -- Overflow
-                Q_FLAGS(4) <= si(L_D8(7), L_RI8(7), L_ADC_DR(7));   -- Signed
-                Q_FLAGS(5) <= cy(L_D8(3), L_RI8(3), L_ADC_DR(3));   -- Halfcarry
+                Q_FLAGS(0) <= cy_add(L_D8(7), L_RI8(7), L_ADC_DR(7));-- Carry
+                Q_FLAGS(1) <= ze(L_ADC_DR);                          -- Zero
+                Q_FLAGS(2) <= L_ADC_DR(7);                           -- Negative
+                Q_FLAGS(3) <= ov_add(L_D8(7), L_RI8(7), L_ADC_DR(7));-- Overflow
+                Q_FLAGS(4) <= si_add(L_D8(7), L_RI8(7), L_ADC_DR(7));-- Signed
+                Q_FLAGS(5) <= cy_add(L_D8(3), L_RI8(3), L_ADC_DR(3));-- Halfcarry
 
             when ALU_ADD =>
                 L_DOUT <= L_ADD_DR & L_ADD_DR;
-                Q_FLAGS(0) <= cy(L_D8(7), L_RI8(7), L_ADD_DR(7));   -- Carry
-                Q_FLAGS(1) <= ze(L_ADD_DR);                         -- Zero
-                Q_FLAGS(2) <= L_ADD_DR(7);                          -- Negative
-                Q_FLAGS(3) <= ov(L_D8(7), L_RI8(7), L_ADD_DR(7));   -- Overflow
-                Q_FLAGS(4) <= si(L_D8(7), L_RI8(7), L_ADD_DR(7));   -- Signed
-                Q_FLAGS(5) <= cy(L_D8(3), L_RI8(3), L_ADD_DR(3));   -- Halfcarry
+                Q_FLAGS(0) <= cy_add(L_D8(7), L_RI8(7), L_ADD_DR(7));-- Carry
+                Q_FLAGS(1) <= ze(L_ADD_DR);                          -- Zero
+                Q_FLAGS(2) <= L_ADD_DR(7);                           -- Negative
+                Q_FLAGS(3) <= ov_add(L_D8(7), L_RI8(7), L_ADD_DR(7));-- Overflow
+                Q_FLAGS(4) <= si_add(L_D8(7), L_RI8(7), L_ADD_DR(7));-- Signed
+                Q_FLAGS(5) <= cy_add(L_D8(3), L_RI8(3), L_ADD_DR(3));-- Halfcarry
 
             when ALU_ADIW =>
                 L_DOUT <= L_ADIW_D;
@@ -309,12 +324,12 @@ begin
 
             when ALU_SBC =>
                 L_DOUT <= L_SBC_DR & L_SBC_DR;
-                Q_FLAGS(0) <= cy(L_SBC_DR(7), L_RI8(7), L_D8(7));   -- Carry
-                Q_FLAGS(1) <= ze(L_SBC_DR) and I_FLAGS(1);          -- Zero
-                Q_FLAGS(2) <= L_SBC_DR(7);                          -- Negative
-                Q_FLAGS(3) <= ov(L_SBC_DR(7), L_RI8(7), L_D8(7));   -- Overflow
-                Q_FLAGS(4) <= si(L_SBC_DR(7), L_RI8(7), L_D8(7));   -- Signed
-                Q_FLAGS(5) <= cy(L_SBC_DR(3), L_RI8(3), L_D8(3));   -- Halfcarry
+                Q_FLAGS(0) <= cy_sub(L_D8(7), L_RI8(7), L_SBC_DR(7));-- Carry
+                Q_FLAGS(1) <= ze(L_SBC_DR) and I_FLAGS(1);           -- Zero
+                Q_FLAGS(2) <= L_SBC_DR(7);                           -- Negative
+                Q_FLAGS(3) <= ov_sub(L_D8(7), L_RI8(7), L_SBC_DR(7));-- Overflow
+                Q_FLAGS(4) <= si_sub(L_D8(7), L_RI8(7), L_SBC_DR(7));-- Signed
+                Q_FLAGS(5) <= cy_sub(L_D8(3), L_RI8(3), L_SBC_DR(3));-- Halfcarry
 
             when ALU_SBIW =>
                 L_DOUT <= L_SBIW_D;
@@ -340,12 +355,12 @@ begin
                 
             when ALU_SUB =>
                 L_DOUT <= L_SUB_DR & L_SUB_DR;
-                Q_FLAGS(0) <= cy(L_SUB_DR(7), L_RI8(7), L_D8(7));   -- Carry
-                Q_FLAGS(1) <= ze(L_SUB_DR);                         -- Zero
-                Q_FLAGS(2) <= L_SUB_DR(7);                          -- Negative
-                Q_FLAGS(3) <= ov(L_SUB_DR(7), L_RI8(7), L_D8(7));   -- Overflow
-                Q_FLAGS(4) <= si(L_SUB_DR(7), L_RI8(7), L_D8(7));   -- Signed
-                Q_FLAGS(5) <= cy(L_SUB_DR(3), L_RI8(3), L_D8(3));   -- Halfcarry
+                Q_FLAGS(0) <= cy_sub(L_D8(7), L_RI8(7), L_SUB_DR(7));-- Carry
+                Q_FLAGS(1) <= ze(L_SUB_DR);                          -- Zero
+                Q_FLAGS(2) <= L_SUB_DR(7);                           -- Negative
+                Q_FLAGS(3) <= ov_sub(L_D8(7), L_RI8(7), L_SUB_DR(7));-- Overflow
+                Q_FLAGS(4) <= si_sub(L_D8(7), L_RI8(7), L_SUB_DR(7));-- Signed
+                Q_FLAGS(5) <= cy_sub(L_D8(3), L_RI8(3), L_SUB_DR(3));-- Halfcarry
 
             when ALU_SWAP =>
                 L_DOUT <= L_SWAP_D & L_SWAP_D;
