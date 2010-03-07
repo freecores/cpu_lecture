@@ -460,6 +460,7 @@ begin
                                         Q_IMM(6) <= '1';
                                         Q_AMOD <= AMOD_iiSP;
                                         Q_RD_M <= I_T0;
+                                        Q_WE_F    <= not I_T0;  -- I flag
                                         Q_WE_XYZS <= not I_T0;
                                         if (I_T0 = '0') then
                                             Q_PC_OP <= PC_LD_S;

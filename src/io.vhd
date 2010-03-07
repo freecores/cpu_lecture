@@ -167,17 +167,29 @@ begin
             if (I_CLR = '1') then
                 L_INTVEC <= "000000";
             else
-                if (L_RX_INT_ENABLED and U_RX_READY) = '1' then
-                    if (L_INTVEC(5) = '0') then     -- no interrupt pending
-                        L_INTVEC <= "101011";       -- _VECTOR(11)
-                    end if;
-                elsif (L_TX_INT_ENABLED and not U_TX_BUSY) = '1' then
-                    if (L_INTVEC(5) = '0') then     -- no interrupt pending
-                        L_INTVEC <= "101100";       -- _VECTOR(12)
-                    end if;
-                else                                -- no interrupt
-                    L_INTVEC <= "000000"; 
-                end if;
+                case L_INTVEC is
+                    when "101011" => -- vector 11 interrupt pending.
+                        if (L_RX_INT_ENABLED and U_RX_READY) = '0' then
+                            L_INTVEC <= "000000";
+                        end if;
+
+                    when "101100" => -- vector 12 interrupt pending.
+                        if (L_TX_INT_ENABLED and not U_TX_BUSY) = '0' then
+                            L_INTVEC <= "000000";
+                        end if;
+
+                    when others   =>
+                        -- no interrupt is pending.
+                        -- We accept a new interrupt.
+                        --
+                        if    (L_RX_INT_ENABLED and U_RX_READY) = '1' then
+                            L_INTVEC <= "101011";            -- _VECTOR(11)
+                        elsif (L_TX_INT_ENABLED and not U_TX_BUSY) = '1' then
+                            L_INTVEC <= "101100";            -- _VECTOR(12)
+                        else
+                            L_INTVEC <= "000000";            -- no interrupt
+                        end if;
+                end case;
             end if;
         end if;
     end process;
