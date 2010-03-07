@@ -144,12 +144,15 @@ begin
                 L_TX_INT_ENABLED  <= '0';
             elsif (I_WE_IO = '1') then
                 case I_ADR_IO is
-                    when X"38"  => Q_7_SEGMENT <= I_DIN(6 downto 0);    -- PORTB
+                    when X"38"  => -- PORTB
+                                   Q_7_SEGMENT <= I_DIN(6 downto 0);
                                    L_LEDS <= not L_LEDS;
-                    when X"40"  =>  -- handled by uart
-                    when X"41"  =>  -- handled by uart
-                    when X"43"  => L_RX_INT_ENABLED <= I_DIN(0);
-                                   L_TX_INT_ENABLED <= I_DIN(1);
+                    when X"2A"  => -- UCSRB
+                                   L_RX_INT_ENABLED <= I_DIN(7);
+                                   L_TX_INT_ENABLED <= I_DIN(6);
+                    when X"2B"  => -- UCSRA:       handled by uart
+                    when X"2C"  => -- UDR:         handled by uart
+                    when X"40"  => -- UCSRC/UBRRH: (ignored)
                     when others =>
                 end case;
             end if;
