@@ -101,8 +101,9 @@ begin
                             Q_AMOD <= AMOD_SPdd;
                             Q_JADR <= "0000000000" & I_OPC(4 downto 0) & "0";
                             Q_PC_OP <= PC_LD_I;
-                            Q_WE_F <= '1';
-                            Q_WE_M <= "11";
+                            Q_WE_F <= '1';      -- clear I-flag
+                            Q_WE_M <= "11";     -- write return address
+                            Q_WE_XYZS <= '1';   -- write new SP
                         end if;
 
                     when "01" =>
