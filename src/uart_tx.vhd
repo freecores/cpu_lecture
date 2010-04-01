@@ -34,46 +34,45 @@ entity uart_tx is
     port(   I_CLK       : in  std_logic;    
             I_CLR       : in  std_logic;            -- RESET
             I_CE_1      : in  std_logic;            -- BAUD rate clock enable
-            I_DATA      : in  std_logic_vector(7 downto 0);   -- DATA to be sent
+            I_DATA      : in  std_logic_vector(7 downto 0);   -- DATA to send
             I_FLAG      : in  std_logic;            -- toggle to send data
-            Q_TX        : out std_logic;            -- Serial output line
-            Q_FLAG      : out std_logic);           -- Transmitting Flag
+            Q_TX_N      : out std_logic;            -- Serial output, active low
+            Q_BUSY      : out std_logic);           -- Transmitter busy
 end uart_tx;
  
 architecture Behavioral of uart_tx is
  
-signal L_BUF            : std_logic_vector(7 downto 0);
-signal L_TODO           : std_logic_vector(3 downto 0);     -- bits to send
+signal L_BUF            : std_logic_vector(8 downto 0);
 signal L_FLAG           : std_logic;
+signal L_TODO           : std_logic_vector(3 downto 0);     -- bits to send
  
 begin
  
     process(I_CLK)
     begin
         if (rising_edge(I_CLK)) then
-            if (I_CLR = '1') then
-                Q_TX   <= '1';
-                L_BUF  <= "11111111";
+            if (I_CLR = '1') then               -- reset
+                Q_TX_N <= '1';
+                L_BUF  <= "111111111";
                 L_TODO <= "0000";
-                L_FLAG <= I_FLAG;                   -- idle
-            elsif (I_CE_1 = '1') then
-                if (L_TODO /= "0000") then          -- transmitting
-                    Q_TX <= L_BUF(0);               -- next bit
-                    L_BUF     <= '1' & L_BUF(7 downto 1);
-                    if (L_TODO = "0001") then
-                        L_FLAG <= I_FLAG;
-                    end if;
+                L_FLAG <= I_FLAG;
+            elsif (L_TODO = "0000") then        -- idle
+                if (L_FLAG /= I_FLAG) then      -- new byte
+                    L_BUF <= I_DATA & '0';      -- 8 data / 1 start
+                    L_TODO <= "1100";           -- 11 bits to send
+                    L_FLAG <= I_FLAG;
+                end if;
+            else                                -- shifting
+                if (I_CE_1 = '1') then 
+                    Q_TX_N <= L_BUF(0);
+                    L_BUF <= '1' & L_BUF(8 downto 1);
                     L_TODO <= L_TODO - "0001";
-                elsif (L_FLAG /= I_FLAG) then       -- new byte
-                    Q_TX <= '0';                    -- start bit
-                    L_BUF <= I_DATA;                -- data bits
-                    L_TODO <= "1001";
                 end if;
             end if;
         end if;
     end process; 
  
-    Q_FLAG <= L_FLAG;
+    Q_BUSY <= '0' when (L_TODO = "0000") else '1';
  
 end Behavioral;  
- 
+

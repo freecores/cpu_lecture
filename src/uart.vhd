@@ -83,20 +83,18 @@ component uart_tx
             I_DATA      : in  std_logic_vector(7 downto 0);
             I_FLAG      : in  std_logic;
 
-            Q_TX        : out std_logic;
-            Q_FLAG      : out std_logic);
+            Q_TX_N      : out std_logic;
+            Q_BUSY      : out std_logic);
 end component;
 
 signal L_RX_OLD_FLAG    : std_logic;
-signal L_TX_FLAG        : std_logic;
-signal L_TX_FLAGQ       : std_logic;
-signal L_TX_DATA        : std_logic_vector(7 downto 0);
 signal L_RX_READY       : std_logic;
+signal L_TX_FLAG        : std_logic;
+signal L_TX_DATA        : std_logic_vector(7 downto 0);
  
 begin
  
     Q_RX_READY <= L_RX_READY;
-    Q_TX_BUSY  <= L_TX_FLAG xor L_TX_FLAGQ;
  
     baud: baudgen
     generic map(CLOCK_FREQ  => CLOCK_FREQ,
@@ -123,13 +121,15 @@ begin
                 I_DATA  => L_TX_DATA,
                 I_FLAG  => L_TX_FLAG,
 
-                Q_TX    => Q_TX,
-                Q_FLAG  => L_TX_FLAGQ);
+                Q_TX_N  => Q_TX,
+                Q_BUSY  => Q_TX_BUSY);
  
     process(I_CLK)
     begin
         if (rising_edge(I_CLK)) then
             if (I_CLR = '1') then
+                L_RX_OLD_FLAG <= R_RX_FLAG;
+                L_RX_READY <= '0';
                 L_TX_FLAG <= '0';
                 L_TX_DATA <= X"33";
             else
@@ -142,11 +142,10 @@ begin
                     L_TX_DATA <= I_TX_DATA;
                 end if;
  
-                if (R_RX_FLAG /= L_RX_OLD_FLAG) then
+                if (L_RX_OLD_FLAG /= R_RX_FLAG) then
+                    L_RX_OLD_FLAG <= R_RX_FLAG;
                     L_RX_READY <= '1';
                 end if;
- 
-                L_RX_OLD_FLAG <= R_RX_FLAG;
             end if;
         end if;
     end process;
